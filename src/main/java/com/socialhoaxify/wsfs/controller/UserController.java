@@ -1,16 +1,25 @@
 package com.socialhoaxify.wsfs.controller;
 
 
+import com.socialhoaxify.wsfs.error.ApiError;
 import com.socialhoaxify.wsfs.model.UserInformation;
 import com.socialhoaxify.wsfs.services.UserService;
+import com.socialhoaxify.wsfs.sharedGenericResponse.GenericResponse;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.*;
+
+import javax.transaction.Transactional;
+import javax.validation.Valid;
+import java.lang.reflect.GenericArrayType;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,9 +29,33 @@ public class UserController {
     private  static final Logger log=LoggerFactory.getLogger(UserController.class);
 
     @PostMapping("/api/1.0/users")
-    public void createUser(@RequestBody UserInformation userInformation){
-       userService.save(userInformation);
+    public GenericResponse createUser(@Valid @RequestBody UserInformation userInformation){
+        userService.save(userInformation);
+        return new GenericResponse("User created.") ;
     }
 
+    @GetMapping("/api/1.0/getUser")
+    @ResponseBody
+    public UserInformation getUserInformation(@RequestParam Long dataId) {
+      return  userService.getUserInformationDataId(dataId);
 
+//        HashMap<String, String> map = new HashMap<>();
+//        map.put("username", userService.getUserInformationDataId(dataId).getUsername());
+//        map.put("displayName", userService.getUserInformationDataId(dataId).getDisplayName());
+//        map.put("password", userService.getUserInformationDataId(dataId).getPassword());
+//        return map;
+
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handleValidationException(MethodArgumentNotValidException exception){
+        ApiError error=new ApiError(400,"Validation error","/api/1.0,users");
+        Map<String,String> validationErrors=new HashMap<>();
+        for(FieldError fieldError:exception.getBindingResult().getFieldErrors()){
+            validationErrors.put(fieldError.getField(),fieldError.getDefaultMessage());
+        }
+        error.setValidationErrors(validationErrors);
+        return error;
+    }
 }

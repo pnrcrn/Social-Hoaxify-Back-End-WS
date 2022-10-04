@@ -1,13 +1,25 @@
 ##h2 database'in default gelmesi i�in
-#spring:
-#  datasource:
-#    generate-unique-name: false
-
-#kayıtların h2 satabase'den hemen silinmemesi için
 spring:
   datasource:
-    url: jdbc:h2:./devdb
-    username: sa
+    generate-unique-name: false
   jpa:
-    hibernate:
-      ddl-auto: update #hibernate de her bir @entity  için herhangi bi değişiklik olduğunda bunlar ekleniyor ve apply ediliyor
+    properties:
+      javax:
+        persistence:
+          validation:
+            mode: none
+
+  main:
+    allow-bean-definition-overriding: true
+#kayıtların h2 satabase'den hemen silinmemesi için
+#spring:
+#  datasource:
+#    url: jdbc:h2:./devdb
+#    username: sa
+#  jpa:
+#    hibernate:
+#      ddl-auto: update #hibernate de her bir @entity  için herhangi bi değişiklik olduğunda bunlar ekleniyor ve apply ediliyor
+
+
+
+
