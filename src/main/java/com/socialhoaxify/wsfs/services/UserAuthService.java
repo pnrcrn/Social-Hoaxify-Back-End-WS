@@ -17,9 +17,8 @@ public class UserAuthService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserInformation inDB= userRepository.findByUsername(username);
-        if(inDB==null){
+        if(inDB==null)
             throw  new UsernameNotFoundException("User not found");
-        }
-        return null;
+        return inDB;//kullanıcı varsa da userInformation objesini baz alan hoaxify'dan userı return ediyoruz
     }
 }

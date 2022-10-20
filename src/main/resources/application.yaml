@@ -9,6 +9,10 @@ spring:
           validation:
             mode: none
 
+#logging:
+#  level:
+#    org.springframework: DEBUG
+
   main:
     allow-bean-definition-overriding: true
 #kayıtların h2 satabase'den hemen silinmemesi için

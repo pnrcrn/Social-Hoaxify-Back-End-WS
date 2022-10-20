@@ -18,14 +18,11 @@ public class UserService {
     private final UserRepository userRepository;
     BCryptPasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository){
+    public UserService(UserRepository userRepository,BCryptPasswordEncoder passwordEncoder){
         this.userRepository=userRepository;
-        this.passwordEncoder=new BCryptPasswordEncoder();
+        this.passwordEncoder=passwordEncoder;
     }
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+
 
     public UserInformation getUserInformationDataId(Long dataId){
      return userRepository.getReferenceById(dataId);
